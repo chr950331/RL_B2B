@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { ArrowLeft, Save, Timer } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Button, Input, Label, Panel, Stat } from "@/components/ui";
 import { api } from "@/lib/api";
 import { formatTime, remainingText } from "@/lib/format";
+import { normalizeImageUrl, shouldSkipImageOptimization } from "@/lib/image-url";
 import { supabase } from "@/lib/supabase";
 import type { Auction, LeaderboardRow } from "@/lib/types";
 import { useSessionUser } from "@/lib/use-session-user";
@@ -87,6 +89,8 @@ export default function AuctionPage() {
 
   if (loading || !auction) return <main className="p-6 text-sm text-neutral-500">{t.loading}</main>;
 
+  const imageUrl = normalizeImageUrl(auction.product_image);
+
   return (
     <AppShell user={user}>
       <main className="mx-auto grid max-w-6xl gap-5 px-4 py-6 lg:grid-cols-[1fr_360px]">
@@ -101,6 +105,18 @@ export default function AuctionPage() {
               <h1 className="mt-1 text-2xl font-semibold">{auction.product_name}</h1>
             </div>
           </div>
+          {imageUrl && (
+            <div className="flex h-96 items-center justify-center overflow-hidden rounded-lg border border-line bg-white">
+              <Image
+                src={imageUrl}
+                alt={auction.product_name}
+                width={960}
+                height={540}
+                unoptimized={shouldSkipImageOptimization(imageUrl)}
+                className="size-full object-contain"
+              />
+            </div>
+          )}
           <Panel className="rounded-lg border p-4">
             <div className="grid grid-cols-3 gap-4">
               <Stat label={t.inventory} value={auction.inventory} />
