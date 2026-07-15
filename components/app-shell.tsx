@@ -8,7 +8,7 @@ import { clearAuthToken } from "@/lib/api";
 import type { Buyer } from "@/lib/types";
 
 const copy = {
-  appName: "RL B2B \u5e93\u5b58\u5206\u914d",
+  appName: "B2B\u5e93\u5b58\u5206\u914d",
   notSignedIn: "\u672a\u767b\u5f55",
   admin: "\u7ba1\u7406",
   logout: "\u767b\u51fa"
