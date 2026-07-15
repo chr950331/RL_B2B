@@ -222,6 +222,14 @@ def normalize_decimal(value: Any) -> float:
     return float(value or 0)
 
 
+def mask_username(username: str | None) -> str:
+    if not username:
+        return ""
+    if len(username) == 1:
+        return username
+    return f"{'*' * (len(username) - 1)}{username[-1]}"
+
+
 async def auction_summary(auction: dict[str, Any], buyer_id: str | None = None) -> dict[str, Any]:
     bids = await rest("GET", f"bids?{eq('auction_id', auction['id'])}")
     my_bid = next((bid for bid in bids if buyer_id and bid["buyer_id"] == buyer_id), None)
@@ -295,9 +303,10 @@ async def auction_detail(auction_id: str, user: dict[str, Any] = Depends(current
     leaderboard = []
     for bid in bids:
         buyer = bid.get("buyers") or {}
+        username = buyer.get("username")
         row = {
             "id": bid["id"],
-            "username": buyer.get("username"),
+            "username": username if user.get("role") == "admin" else mask_username(username),
             "premium": normalize_decimal(bid["premium"]),
             "quantity": bid["quantity"],
             "updated_at": bid["updated_at"],

@@ -7,6 +7,13 @@ import { Button } from "@/components/ui";
 import { clearAuthToken } from "@/lib/api";
 import type { Buyer } from "@/lib/types";
 
+const copy = {
+  appName: "RL B2B \u5e93\u5b58\u5206\u914d",
+  notSignedIn: "\u672a\u767b\u5f55",
+  admin: "\u7ba1\u7406",
+  logout: "\u767b\u51fa"
+};
+
 export function AppShell({ user, children }: { user: Buyer | null; children: React.ReactNode }) {
   const router = useRouter();
 
@@ -24,19 +31,20 @@ export function AppShell({ user, children }: { user: Buyer | null; children: Rea
               <ShoppingBag size={19} />
             </div>
             <div className="min-w-0">
-              <div className="truncate text-sm font-semibold">RL B2B 库存分配</div>
-              <div className="truncate text-xs text-neutral-500">{user?.username || "未登录"}</div>
+              <div className="truncate text-sm font-semibold">{copy.appName}</div>
+              <div className="truncate text-xs text-neutral-500">{user?.username || copy.notSignedIn}</div>
             </div>
           </Link>
           <div className="flex items-center gap-2">
             {user?.role === "admin" && (
               <Link href="/admin" className="focus-ring inline-flex min-h-10 items-center gap-2 rounded-md border border-line bg-white px-3 text-sm font-semibold">
                 <ShieldCheck size={16} />
-                管理
+                {copy.admin}
               </Link>
             )}
-            <Button type="button" variant="ghost" onClick={logout} aria-label="退出登录">
+            <Button type="button" variant="secondary" onClick={logout} aria-label={copy.logout}>
               <LogOut size={17} />
+              {copy.logout}
             </Button>
           </div>
         </div>

@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Save, Timer } from "lucide-react";
+import { ArrowLeft, Save, Timer } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { Button, Input, Label, Panel, Stat } from "@/components/ui";
 import { api } from "@/lib/api";
@@ -17,8 +18,8 @@ const t = {
   loading: "\u52a0\u8f7d\u4e2d...",
   inventory: "\u5e93\u5b58",
   highestPremium: "\u6700\u9ad8\u670d\u52a1\u8d39",
-  totalDemand: "\u603b\u9700\u6c42",
   remainingTime: "\u5269\u4f59\u65f6\u95f4",
+  backHome: "\u8fd4\u56de\u4e3b\u754c\u9762",
   leaderboard: "\u51fa\u4ef7\u6392\u884c\u699c",
   username: "\u7528\u6237\u540d",
   premium: "\u670d\u52a1\u8d39",
@@ -90,15 +91,20 @@ export default function AuctionPage() {
     <AppShell user={user}>
       <main className="mx-auto grid max-w-6xl gap-5 px-4 py-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-5">
-          <div>
-            <div className="text-sm font-semibold uppercase text-moss">{auction.sku}</div>
-            <h1 className="mt-1 text-2xl font-semibold">{auction.product_name}</h1>
+          <div className="space-y-3">
+            <Link href="/buyer" className="focus-ring inline-flex min-h-11 items-center gap-2 rounded-md bg-ink px-4 text-sm font-semibold text-white shadow-sm">
+              <ArrowLeft size={17} />
+              {t.backHome}
+            </Link>
+            <div>
+              <div className="text-sm font-semibold uppercase text-moss">{auction.sku}</div>
+              <h1 className="mt-1 text-2xl font-semibold">{auction.product_name}</h1>
+            </div>
           </div>
           <Panel className="rounded-lg border p-4">
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-3 gap-4">
               <Stat label={t.inventory} value={auction.inventory} />
               <Stat label={t.highestPremium} value={`${auction.highest_premium}%`} />
-              <Stat label={t.totalDemand} value={auction.total_demand} />
               <Stat label={t.remainingTime} value={remainingText(auction.end_time)} />
             </div>
           </Panel>
@@ -119,7 +125,7 @@ export default function AuctionPage() {
                 <tbody>
                   {leaderboard.map((row) => (
                     <tr key={row.id} className={row.is_mine ? "bg-green-50" : "border-t border-line"}>
-                      <td className="px-4 py-3 font-semibold">{row.username}{row.is_mine ? ` · ${t.me}` : ""}</td>
+                      <td className="px-4 py-3 font-semibold">{row.username}{row.is_mine ? ` \u00b7 ${t.me}` : ""}</td>
                       <td className="px-4 py-3">{row.premium}%</td>
                       <td className="px-4 py-3">{row.quantity}</td>
                       <td className="px-4 py-3">{formatTime(row.updated_at)}</td>
