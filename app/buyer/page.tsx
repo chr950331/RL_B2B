@@ -68,14 +68,14 @@ export default function BuyerHome() {
             return (
               <Panel key={auction.id} className="overflow-hidden rounded-lg border">
                 {imageUrl && (
-                  <div className="h-44 bg-neutral-100">
+                  <div className="flex h-72 items-center justify-center bg-white">
                     <Image
                       src={imageUrl}
                       alt={auction.product_name}
                       width={720}
                       height={320}
                       unoptimized={shouldSkipImageOptimization(imageUrl)}
-                      className="size-full object-cover"
+                      className="size-full object-contain"
                     />
                   </div>
                 )}
