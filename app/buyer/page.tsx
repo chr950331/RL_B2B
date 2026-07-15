@@ -8,6 +8,7 @@ import { AppShell } from "@/components/app-shell";
 import { Button, Panel, Stat } from "@/components/ui";
 import { api } from "@/lib/api";
 import { formatDateTime, remainingText } from "@/lib/format";
+import { normalizeImageUrl, shouldSkipImageOptimization } from "@/lib/image-url";
 import type { Auction } from "@/lib/types";
 import { useSessionUser } from "@/lib/use-session-user";
 
@@ -61,13 +62,23 @@ export default function BuyerHome() {
         </div>
         {error && <p className="rounded-md bg-red-50 p-3 text-sm text-red-800">{error}</p>}
         <div className="grid gap-4 md:grid-cols-2">
-          {auctions.map((auction) => (
-            <Panel key={auction.id} className="overflow-hidden rounded-lg border">
-              {auction.product_image && (
-                <div className="h-44 bg-neutral-100">
-                  <Image src={auction.product_image} alt={auction.product_name} width={720} height={320} className="size-full object-cover" />
-                </div>
-              )}
+          {auctions.map((auction) => {
+            const imageUrl = normalizeImageUrl(auction.product_image);
+
+            return (
+              <Panel key={auction.id} className="overflow-hidden rounded-lg border">
+                {imageUrl && (
+                  <div className="h-44 bg-neutral-100">
+                    <Image
+                      src={imageUrl}
+                      alt={auction.product_name}
+                      width={720}
+                      height={320}
+                      unoptimized={shouldSkipImageOptimization(imageUrl)}
+                      className="size-full object-cover"
+                    />
+                  </div>
+                )}
               <div className="space-y-4 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -95,8 +106,9 @@ export default function BuyerHome() {
                   <ArrowRight size={16} />
                 </Link>
               </div>
-            </Panel>
-          ))}
+              </Panel>
+            );
+          })}
         </div>
         {!auctions.length && !busy && <div className="rounded-lg border border-line bg-white p-8 text-center text-sm text-neutral-500">{t.empty}</div>}
       </main>

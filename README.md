@@ -1,4 +1,4 @@
-# RL B2B Username Bidding MVP
+# B2B Username Bidding MVP
 
 Internal B2B inventory allocation platform. Buyers submit a premium percentage and requested quantity. Inventory allocation is sorted by highest premium first, then earliest update time.
 

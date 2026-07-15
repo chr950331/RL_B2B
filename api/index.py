@@ -41,7 +41,7 @@ SUPABASE_URL = os.getenv("SUPABASE_URL", "").rstrip("/")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY", "")
 SUPABASE_SERVICE_ROLE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY", "")
 
-app = FastAPI(title="RL B2B Anonymous Bidding API")
+app = FastAPI(title="B2B Inventory Allocation API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
