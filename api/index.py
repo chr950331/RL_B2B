@@ -222,6 +222,10 @@ def normalize_decimal(value: Any) -> float:
     return float(value or 0)
 
 
+def decimal_value(value: Any) -> Decimal:
+    return Decimal(str(value or "0"))
+
+
 def mask_username(username: str | None) -> str:
     if not username:
         return ""
@@ -338,6 +342,9 @@ async def upsert_bid(auction_id: str, payload: BidIn, user: dict[str, Any] = Dep
         "updated_at": now_utc().isoformat(),
     }
     if existing:
+        previous_premium = decimal_value(existing[0].get("premium"))
+        if payload.premium <= previous_premium:
+            raise HTTPException(400, "New premium must be higher than your previous bid")
         result = await rest("PATCH", f"bids?{eq('id', existing[0]['id'])}", data, "return=representation")
     else:
         result = await rest("POST", "bids", data, "return=representation")

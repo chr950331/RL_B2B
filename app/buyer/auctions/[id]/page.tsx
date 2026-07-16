@@ -31,6 +31,9 @@ const t = {
   formTitle: "\u63d0\u4ea4\u6216\u4fee\u6539\u6211\u7684\u51fa\u4ef7",
   premiumLabel: "\u670d\u52a1\u8d39\u6bd4\u4f8b (%)",
   quantityLabel: "\u9700\u6c42\u6570\u91cf",
+  currentPremium: "\u5f53\u524d\u670d\u52a1\u8d39",
+  mustIncrease: "\u4fee\u6539\u51fa\u4ef7\u65f6\uff0c\u670d\u52a1\u8d39\u5fc5\u987b\u9ad8\u4e8e\u4e0a\u4e00\u6b21\u62a5\u4ef7\uff0c\u4e0d\u80fd\u964d\u4ef7\u6216\u6301\u5e73\u3002",
+  increaseError: "\u65b0\u670d\u52a1\u8d39\u5fc5\u987b\u9ad8\u4e8e\u4f60\u4e0a\u4e00\u6b21\u7684\u62a5\u4ef7\u3002",
   saving: "\u4fdd\u5b58\u4e2d...",
   saveBid: "\u4fdd\u5b58\u51fa\u4ef7"
 };
@@ -71,6 +74,12 @@ export default function AuctionPage() {
 
   async function saveBid(event: React.FormEvent) {
     event.preventDefault();
+    const previousPremium = Number(auction?.my_bid?.premium ?? 0);
+    const nextPremium = Number(premium);
+    if (auction?.my_bid && nextPremium <= previousPremium) {
+      setMessage(t.increaseError);
+      return;
+    }
     setSaving(true);
     setMessage("");
     try {
@@ -160,8 +169,20 @@ export default function AuctionPage() {
             </div>
             <Label>
               {t.premiumLabel}
-              <Input type="number" min="0" step="0.01" required value={premium} onChange={(event) => setPremium(event.target.value)} />
+              <Input
+                type="number"
+                min={auction.my_bid ? String(Number(auction.my_bid.premium) + 0.01) : "0"}
+                step="0.01"
+                required
+                value={premium}
+                onChange={(event) => setPremium(event.target.value)}
+              />
             </Label>
+            {auction.my_bid && (
+              <p className="rounded-md bg-amber-50 p-3 text-sm leading-6 text-amber-900">
+                {t.currentPremium}: {auction.my_bid.premium}%。{t.mustIncrease}
+              </p>
+            )}
             <Label>
               {t.quantityLabel}
               <Input type="number" min="1" step="1" required value={quantity} onChange={(event) => setQuantity(event.target.value)} />
